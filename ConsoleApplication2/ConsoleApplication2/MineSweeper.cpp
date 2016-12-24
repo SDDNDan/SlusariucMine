@@ -7,27 +7,33 @@
 
 using namespace sf;
 using namespace std;
+
 int main()
 {
-	RenderWindow renderWindow(VideoMode(640, 480),"MineSweeper");
+	RenderWindow renderWindow(VideoMode(1024, 860),"MineSweeper");
+	Sprite Start;
+	Texture ButonulStart;
+	ButonulStart.loadFromFile("Start_button_red.png");
+	ButonulStart.setSmooth(true);
+	Start.setTexture(ButonulStart);
+	Start.setScale(0.5f, 0.5f);
+	Start.setPosition(Vector2f(440,640));
+	
 	while (renderWindow.isOpen())
-	{
+	{  
 		Event eveniment;
 		while (renderWindow.pollEvent(eveniment))
 		{
+			
 			switch (eveniment.type)
 			{
 			case Event::Closed:
 					renderWindow.close();
 					break;
-			case Event::Resized:
-				cout << eveniment.size.height << " " << eveniment.size.width << endl;
-				break;
-			case Event::TextEntered:
-				cout << eveniment.text.unicode;
-				break;
-
+			
 			}
+			renderWindow.draw(Start);
+			renderWindow.display();
 		}
 	}
 }
