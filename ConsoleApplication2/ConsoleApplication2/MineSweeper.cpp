@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <conio.h>
 #include <time.h>
-
+#include <windows.h>
 #define BOMBA 11
 using namespace sf;
 using namespace std;
@@ -20,12 +20,19 @@ int sepoate = 0;
 int sumabombe;
 int gasite;
 int quest[30][30];
+int hero = 3;
+int onlyonestart;
 Sprite joc[30][30];
 Texture nothing;
 Sprite loss;
 Texture ptloss;
 Sprite win;
 Texture ptwin;
+struct Top10 {
+	char numele[30];
+	int nul;
+	int scor;
+};
 void wait(int seconds)
 {
 	clock_t endwait;
@@ -71,23 +78,13 @@ void creare()
 		for (int k2 = 0; k2 < coloane; k2++)
 		{
 			int poate = rand() % 10+1;
-			if(poate<4)
+			if(poate<hero)
 				if (minesweeper[k][k2] != BOMBA)
 				{
 					s++;
 					minesweeper[k][k2] = BOMBA;
 				}
 		}
-	/*while (s<bombe)
-	{
-		int number = rand() % coloane+1;
-		int number2 = rand() % lini+1;
-		if (minesweeper[number][number2] != BOMBA)
-		{
-			s++;
-			minesweeper[number][number2] = BOMBA;
-		}
-	}*/
 	for (int k = 0; k<lini; k++)
 		for (int k2 = 0; k2<coloane; k2++)
 			if (minesweeper[k][k2] == BOMBA)
@@ -113,6 +110,8 @@ void creare()
 int rezx, rezy;
 int main()
 {
+	HWND hWnd = GetConsoleWindow();
+	ShowWindow(hWnd, SW_HIDE);
 	Texture one;
 	one.loadFromFile("1.png");
 	Texture two;
@@ -138,14 +137,21 @@ int main()
 	loss.setTexture(ptloss);
 	ptwin.loadFromFile("win.png");
 	win.setTexture(ptwin);
+	char nume[30];
+	int pozchar = 0;
+	String words;
+	Font font;
+	font.loadFromFile("Candarai.ttf");
+	Text text(words,font,40);
 	
+
 	
 	
 	
 	
 	rezx = 1024;
 	rezy = 860;
-	RenderWindow renderWindow(VideoMode(rezx, rezy), "MineSweeper");
+	RenderWindow renderWindow(VideoMode(rezx, rezy), "MineSweeper",Style::Titlebar|Style::Close);
 	Sprite Start;
 	Texture ButonulStart;
 	ButonulStart.loadFromFile("Start_button_red.png");
@@ -167,7 +173,20 @@ int main()
 	int Okpentrustart = 0;
 	
 	
-	
+	/*Top10 Toti[10];
+	cin >> Toti[0].numele;
+	cout << Toti[0].numele;
+	Toti[0].scor = 5;
+	Toti[0].nul = 6;
+	for (int i = 0; i < Toti[0].nul; i++)
+		words += (char)Toti[0].numele[i];
+	if (Toti[0].scor / 10 == 0)
+		words += char(Toti[0].scor + 48);
+	else
+	{
+		words += char(Toti[0].scor/10 + 48);
+		words += char(Toti[0].scor + 48);
+	}*/
 	while (renderWindow.isOpen())
 	{
 		
@@ -179,6 +198,7 @@ int main()
 				
 			switch (eveniment.type)
 			{
+				
 			case Event::Closed:
 				renderWindow.close();
 				break;
@@ -190,6 +210,7 @@ int main()
 
 							if (eveniment.mouseButton.x <= Start.getPosition().x + 100 && eveniment.mouseButton.y <= Start.getPosition().y + 100)
 							{
+								onlyonestart = 1;
 								cout << eveniment.mouseButton.x << " " << eveniment.mouseButton.y;
 								cout << endl << Start.getPosition().x << " " << Start.getPosition().y;
 								cout << "Da" << endl;
@@ -198,8 +219,9 @@ int main()
 							}
 						}
 						else
+							if(onlyonestart==1)
 							if (eveniment.mouseButton.x >= (rezx * 2 + rezx+100) / coloane&&eveniment.mouseButton.y >= (rezy * 2) / lini)
-								if (eveniment.mouseButton.x <= (rezx * 2 + rezx) / coloane + 30 * coloane&& eveniment.mouseButton.y <= (rezy * 2) / lini + 30 * lini)
+								if (eveniment.mouseButton.x <= (rezx * 2 + rezx+100) / coloane + 30 * coloane&& eveniment.mouseButton.y <= (rezy * 2) / lini + 30 * lini)
 								{
 									int y = (eveniment.mouseButton.x - ((rezx * 2 + rezx+100) / coloane)) / 30;
 									int x = (eveniment.mouseButton.y - ((rezy * 2) / lini)) / 30;
@@ -255,16 +277,20 @@ int main()
 																			renderWindow.draw(loss);
 																			renderWindow.display();
 																			sepoate = 0;
-																			//coloane = 8;
-																			//lini = 6;
-																			
+																			coloane = 8;
+																			lini = 6;
+																			/*
+																			//PENTRU AJUTOR PREZENTARE
 																			if (coloane < 28)
 																			{
 																				coloane++;
 																				if (lini<20)
-																				lini = coloane - 2;
+																					lini = coloane - 2;
 																			}
-																			wait(1);
+																			else
+																			hero++;
+																			*/
+																			wait(3);
 																			
 																		}
 									cout << gasite + sumabombe << " " << lini*coloane << endl;
@@ -273,15 +299,17 @@ int main()
 										win.setPosition(Vector2f(250, 150));
 										renderWindow.draw(win);
 										renderWindow.display();										
-										wait(5);
+										wait(3);
 										
 										sepoate = 0;
 										if (coloane < 28)
 										{
 											coloane++;
-											if(lini<20)
-											lini = coloane - 2;
+											if (lini < 20)
+												lini = coloane - 2;
 										}
+										else
+											hero++;
 										
 									}
 								}
@@ -289,31 +317,55 @@ int main()
 					}
 					else
 						if(Mouse::isButtonPressed(Mouse::Right))
+							if (onlyonestart == 1)
 					{
 							if (eveniment.mouseButton.x >= (rezx * 2 + rezx / 2) / coloane&&eveniment.mouseButton.y >= (rezy * 2) / lini)
-								if (eveniment.mouseButton.x <= (rezx * 2 + rezx) / coloane + 30 * coloane&& eveniment.mouseButton.y <= (rezy * 2) / lini + 30 * lini)
+								if (eveniment.mouseButton.x <= (rezx * 2 + rezx+100) / coloane + 30 * coloane&& eveniment.mouseButton.y <= (rezy * 2) / lini + 30 * lini)
+								
 								{
-									int y = (eveniment.mouseButton.x - ((rezx * 2 + rezx) / coloane)) / 30;
+									int y = (eveniment.mouseButton.x - ((rezx * 2 + rezx + 100) / coloane)) / 30;
 									int x = (eveniment.mouseButton.y - ((rezy * 2) / lini)) / 30;
-									if (quest[x][y] == 0)
+									if (minesweeper[x][y] != 12)
 									{
-										joc[y][x].setTexture(question);
-										quest[x][y] = 1;
-									}
-									else
-									{
-										quest[x][y] = 0;
-										joc[y][x].setTexture(patrat);
+										if (quest[x][y] == 0)
+										{
+											joc[y][x].setTexture(question);
+											quest[x][y] = 1;
+										}
+										else
+										{
+											quest[x][y] = 0;
+											joc[y][x].setTexture(patrat);
+										}
 									}
 								}
 					}
 				break;
+				case Event::TextEntered:
+					if (eveniment.text.unicode >= 32 && eveniment.text.unicode <= 126)
+					{
+						words += (char)eveniment.text.unicode;
+						nume[pozchar] = (char)eveniment.text.unicode;
+						pozchar++;
+					}
+					else
+						if (eveniment.text.unicode == 8 && words.getSize() > 0)
+						{
+							words.erase(words.getSize() - 1, words.getSize());
+							pozchar--;
+							
+						}
+					
+					text.setPosition(Vector2f(700, 0));
+					text.setString(words);
+					break;
 			}
 
 			
 			
 			renderWindow.draw(Background);
 			renderWindow.draw(Start);
+			renderWindow.draw(text);
 			if (Okpentrustart == 1)
 			{
 				
