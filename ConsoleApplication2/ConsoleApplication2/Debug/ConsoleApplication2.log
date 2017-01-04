@@ -1,6 +1,6 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (ConsoleApplication2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   MineSweeper.cpp
-c:\users\dan\desktop\istoric\problema1\consoleapplication2\consoleapplication2\minesweeper.cpp(51): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\dan\desktop\istoric\problema1\consoleapplication2\consoleapplication2\minesweeper.cpp(259): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\dan\desktop\istoric\problema1\consoleapplication2\consoleapplication2\minesweeper.cpp(68): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\dan\desktop\istoric\problema1\consoleapplication2\consoleapplication2\minesweeper.cpp(327): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   ConsoleApplication2.vcxproj -> C:\Users\Dan\Desktop\Istoric\Problema1\ConsoleApplication2\Debug\MineSweeper.exe
   ConsoleApplication2.vcxproj -> C:\Users\Dan\Desktop\Istoric\Problema1\ConsoleApplication2\Debug\MineSweeper.pdb (Full PDB)
