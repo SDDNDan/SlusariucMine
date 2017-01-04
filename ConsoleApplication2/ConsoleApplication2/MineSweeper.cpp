@@ -11,33 +11,28 @@
 #define BOMBA 11
 using namespace sf;
 using namespace std;
-
-int rezx, rezy;
-int main()
+int coloane = 7, lini = 5;
+int minesweeper[30][30];
+int bombe = (lini + coloane) * 2-coloane;
+void reset()
 {
-	int coloane, lini;
-	cin >>coloane >>lini;
-	int minesweeper[30][30] = { 0 };
+	for (int i = 0; i < 30; i++)
+		for (int j = 0; j < 30; j++)
+			minesweeper[i][j] = 0;
+}
+void creare()
+{
 	srand(time(0));
 	int s = 0;
-	
-	while(s<15)
+	while (s<bombe)
 	{
-		int number = rand() % coloane;
-		int number2 = rand() % lini;
+		int number = rand() % coloane+1;
+		int number2 = rand() % lini+1;
 		if (minesweeper[number][number2] != BOMBA)
 		{
 			s++;
 			minesweeper[number][number2] = BOMBA;
 		}
-	}
-	cout << s<<endl;
-	
-	for (int k1 = 0; k1 < lini; k1++)
-	{
-		for (int k2 = 0; k2 < coloane; k2++)
-			cout << minesweeper[k1][k2] << " ";
-		cout << endl;
 	}
 	for (int k = 0; k<lini; k++)
 		for (int k2 = 0; k2<coloane; k2++)
@@ -60,6 +55,22 @@ int main()
 				if (minesweeper[k - 1][k2 - 1] != BOMBA)
 					minesweeper[k - 1][k2 - 1] ++;
 			}
+}
+int rezx, rezy;
+int main()
+{
+	
+	
+	
+	creare();
+	
+	for (int k1 = 0; k1 < lini; k1++)
+	{
+		for (int k2 = 0; k2 < coloane; k2++)
+			cout << minesweeper[k1][k2] << " ";
+		cout << endl;
+	}
+	
 	cout << endl;
 	for (int k1 = 0; k1 < lini; k1++)
 	{
@@ -78,7 +89,7 @@ int main()
 	ButonulStart.loadFromFile("Start_button_red.png");
 	ButonulStart.setSmooth(true);
 	Start.setTexture(ButonulStart);
-	Start.setScale(0.7f, 0.7f);
+	Start.setScale(1, 1);
 	Start.setPosition(Vector2f(420, 660));
 	Sprite Background;
 	Texture Backgroundtext;
@@ -97,7 +108,7 @@ int main()
 		for (int j = 0; j < lini; j++)
 		{
 			joc[i][j].setTexture(patrat);
-			joc[i][j].setPosition(Vector2f(3300/coloane+30 * i,1700/lini+30 * j));
+			joc[i][j].setPosition(Vector2f((rezx*2+rezx/2)/coloane+30 * i,(rezy*2)/lini+30 * j));
 	     }
 	while (renderWindow.isOpen())
 	{
@@ -113,7 +124,7 @@ int main()
 			case Event::MouseButtonPressed:
 				if (eveniment.mouseButton.x >= Start.getPosition().x&&eveniment.mouseButton.y >= Start.getPosition().y)
 				{
-					if (eveniment.mouseButton.x <= Start.getPosition().x + 120 && eveniment.mouseButton.y <= Start.getPosition().y + 120)
+					if (eveniment.mouseButton.x <= Start.getPosition().x + 80 && eveniment.mouseButton.y <= Start.getPosition().y + 80)
 					{
 						cout << eveniment.mouseButton.x << " " << eveniment.mouseButton.y;
 						cout << endl << Start.getPosition().x << " " << Start.getPosition().y;
@@ -122,9 +133,13 @@ int main()
 					}
 				}
 				else
-					if (eveniment.mouseButton.x >= 3300 / coloane&&eveniment.mouseButton.y >= 1700 / lini)
-						if (eveniment.mouseButton.x <= 3300 / coloane + 30 * coloane&& eveniment.mouseButton.y <= 1700 / lini + 30 * lini)
-							cout << (eveniment.mouseButton.y - (1700 / lini)) / 30  << " "<<(eveniment.mouseButton.x - (3300 / coloane)) / 30<<endl;
+					if (eveniment.mouseButton.x >= (rezx*2+rezx/2) / coloane&&eveniment.mouseButton.y >= (rezy * 2) / lini)
+						if (eveniment.mouseButton.x <= (rezx * 2 + rezx / 2) / coloane + 30 * coloane&& eveniment.mouseButton.y <= (rezy * 2) / lini + 30 * lini)
+						{
+							cout << (eveniment.mouseButton.y - ((rezy * 2) / lini)) / 30 << " " << (eveniment.mouseButton.x - ((rezx * 2 + rezx / 2) / coloane)) / 30 << endl;
+							int x = eveniment.mouseButton.y - ((rezy * 2) / lini)) / 30;
+							int y = eveniment.mouseButton.x - ((rezx * 2 + rezx / 2) / coloane)) / 30;
+						}
 				
 				break;
 			}
@@ -138,6 +153,9 @@ int main()
 					for (int j = 0; j < lini; j++)
 					{
 						renderWindow.draw(joc[i][j]);
+						reset();
+						creare();
+						
 					}
 			renderWindow.display();
 		
