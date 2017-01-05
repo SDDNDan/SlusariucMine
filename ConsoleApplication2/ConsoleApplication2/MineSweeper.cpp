@@ -15,12 +15,13 @@ using namespace sf;
 using namespace std;
 int coloane = 8, lini = 6;
 int minesweeper[30][30];
+int minesweeperhelp[30][30];
 int copie[30][30];
 int bombe = (lini + coloane) * 2-coloane;
 int sepoate = 0;
 int sumabombe;
 int gasite;
-int quest[30][30];
+int quest[40][40];
 int hero = 25;
 int onlyonestart;
 int cati = 0;
@@ -36,6 +37,9 @@ struct Top10 {
 	int nul;
 	int scor;
 };
+struct poziti {
+	int x, y;
+}pozitiile[8];
 Top10 lista[10];
 void citestedoar()
 {
@@ -174,6 +178,22 @@ int main()
 {
 	//HWND hWnd = GetConsoleWindow();
 	//ShowWindow(hWnd, SW_HIDE);
+	pozitiile[0].x = 0;
+	pozitiile[1].x = 0;
+	pozitiile[2].x = 1;
+	pozitiile[3].x = -1;
+	pozitiile[4].x = 1;
+	pozitiile[5].x = 1;
+	pozitiile[6].x = -1;
+	pozitiile[7].x = -1;
+	pozitiile[0].y = 1;
+	pozitiile[1].y = -1;
+	pozitiile[2].y = 0;
+	pozitiile[3].y = 0;
+	pozitiile[4].y = 1;
+	pozitiile[5].y = -1;
+	pozitiile[6].y = 1;
+	pozitiile[7].y = -1;
 	Texture one;
 	one.loadFromFile("1.png");
 	Texture two;
@@ -445,30 +465,170 @@ int main()
 						
 					}
 					else
-						if(Mouse::isButtonPressed(Mouse::Right))
+						if (Mouse::isButtonPressed(Mouse::Right))
+						{
 							if (onlyonestart == 1)
-					{
-							if (eveniment.mouseButton.x >= (rezx * 2 + rezx / 2) / coloane&&eveniment.mouseButton.y >= (rezy * 2) / lini)
-								if (eveniment.mouseButton.x <= (rezx * 2 + rezx+100) / coloane + 30 * coloane&& eveniment.mouseButton.y <= (rezy * 2) / lini + 30 * lini)
-								
-								{
-									int y = (eveniment.mouseButton.x - ((rezx * 2 + rezx + 100) / coloane)) / 30;
-									int x = (eveniment.mouseButton.y - ((rezy * 2) / lini)) / 30;
-									if (minesweeper[x][y] != 12)
+							{
+								if (eveniment.mouseButton.x >= (rezx * 2 + rezx / 2) / coloane&&eveniment.mouseButton.y >= (rezy * 2) / lini)
+									if (eveniment.mouseButton.x <= (rezx * 2 + rezx + 100) / coloane + 30 * coloane&& eveniment.mouseButton.y <= (rezy * 2) / lini + 30 * lini)
+
 									{
-										if (quest[x][y] == 0)
+										int y = (eveniment.mouseButton.x - ((rezx * 2 + rezx + 100) / coloane)) / 30;
+										int x = (eveniment.mouseButton.y - ((rezy * 2) / lini)) / 30;
+										if (minesweeper[x][y] != 12)
 										{
-											joc[y][x].setTexture(question);
-											quest[x][y] = 1;
-										}
-										else
-										{
-											quest[x][y] = 0;
-											joc[y][x].setTexture(patrat);
+											if (quest[x][y] == 0)
+											{
+												
+												joc[y][x].setTexture(question);
+												quest[x][y] = 1;
+											}
+											else
+											{
+												quest[x][y] = 0;
+												joc[y][x].setTexture(patrat);
+											}
 										}
 									}
+							}
+						}
+						else
+							if (Mouse::isButtonPressed(Mouse::Middle))
+							{
+								int y = (eveniment.mouseButton.x - ((rezx * 2 + rezx + 100) / coloane)) / 30;
+								int x = (eveniment.mouseButton.y - ((rezy * 2) / lini)) / 30;
+								int curaj = 0;
+								int curaj2 = 0;
+								
+								if (quest[x][y + 1] == 1 && minesweeper[x][y + 1] == 11&&x>=0&&x<lini&&y+1>=0&&y+1<coloane)
+									curaj++;
+								if (quest[x][y - 1] == 1 && minesweeper[x][y - 1] == 11 && x >= 0 && x<lini&&y -1 >= 0 && y-1<coloane)
+									curaj++;
+								if (quest[x + 1][y] == 1 && minesweeper[x + 1][y] == 11 && x+1 >= 0 && x+1<lini&&y >= 0 && y<coloane)
+									curaj++;
+								if (quest[x - 1][y] == 1 && minesweeper[x - 1][y] == 11 && x-1 >= 0 && x-1 <lini&&y>= 0 && y<coloane)
+									curaj++;
+								if (quest[x + 1][y + 1] == 1 && minesweeper[x + 1][y + 1] == 11 && x+1 >= 0 && x+1<lini&&y + 1 >= 0 && y+1<coloane)
+									curaj++;
+								if (quest[x + 1][y - 1] == 1 && minesweeper[x + 1][y - 1] == 11 && x+1 >= 0 && x+1<lini&&y-1 >= 0 && y-1<coloane)
+									curaj++;
+								if (quest[x - 1][y + 1] == 1 && minesweeper[x - 1][y + 1] == 11 && x-1 >= 0 && x-1<lini&&y + 1 >= 0 && y+1<coloane)
+									curaj++;
+								if (quest[x - 1][y - 1] == 1 && minesweeper[x - 1][y - 1] == 11 && x-1 >= 0 && x-1<lini&&y - 1 >= 0 && y-1<coloane)
+									curaj++;
+								if (quest[x][y + 1] == 1 && x >= 0 && x<lini&&y + 1 >= 0 && y + 1<coloane)
+									curaj2++;
+								if (quest[x][y - 1] == 1 && x >= 0 && x<lini&&y - 1 >= 0 && y - 1<coloane)
+									curaj2++;
+								if (quest[x - 1][y] == 1 && x - 1 >= 0 && x - 1 <lini&&y >= 0 && y<coloane)
+									curaj2++;
+								if (quest[x + 1][y] == 1 && x + 1 >= 0 && x + 1<lini&&y >= 0 && y<coloane)
+									curaj2++;
+								if (quest[x + 1][y + 1] == 1 && x + 1 >= 0 && x + 1<lini&&y + 1 >= 0 && y + 1<coloane)
+									curaj2++;
+								if (quest[x + 1][y - 1] == 1 && x + 1 >= 0 && x + 1<lini&&y - 1 >= 0 && y - 1<coloane)
+									curaj2++;
+								if (quest[x - 1][y + 1] == 1 && x - 1 >= 0 && x - 1<lini&&y + 1 >= 0 && y + 1<coloane)
+									curaj2++;
+								if (quest[x - 1][y - 1] == 1 && x - 1 >= 0 && x - 1<lini&&y - 1 >= 0 && y - 1<coloane)
+									curaj2++;
+
+								if (curaj2 != 0)
+								{
+									if (curaj == minesweeperhelp[x][y] && curaj == curaj2)
+									{
+										
+										
+										for (int contor = 0; contor < 8; contor++)
+										{
+											int auxx = x + pozitiile[contor].x;
+											int auxy = y + pozitiile[contor].y;
+											if (minesweeper[auxx][auxy] == 1)
+											{
+												joc[auxy][auxx].setTexture(one); gasite++; minesweeper[auxx][auxy] = 12;
+											}
+											else
+												if (minesweeper[auxx][auxy] == 2)
+												{
+													joc[auxy][auxx].setTexture(two); gasite++; minesweeper[auxx][auxy] = 12;
+												}
+												else
+													if (minesweeper[auxx][auxy] == 3)
+													{
+														joc[auxy][auxx].setTexture(three); gasite++; minesweeper[auxx][auxy] = 12;
+													}
+													else
+														if (minesweeper[auxx][auxy] == 4)
+														{
+															joc[auxy][auxx].setTexture(four); gasite++; minesweeper[auxx][auxy] = 12;
+														}
+														else
+															if (minesweeper[auxx][auxy] == 5)
+															{
+																joc[auxy][auxx].setTexture(five); gasite++; minesweeper[auxx][auxy] = 12;
+															}
+															else
+																if (minesweeper[auxx][auxy] == 6)
+																{
+																	joc[auxy][auxx].setTexture(six); gasite++; minesweeper[auxx][auxy] = 12;
+																}
+																else
+																	if (minesweeper[auxx][auxy] == 7)
+																	{
+																		joc[auxy][auxx].setTexture(seven); gasite++; minesweeper[auxx][auxy] = 12;
+																	}
+																	else
+																		if (minesweeper[auxx][auxy] == 8)
+																		{
+																			joc[auxy][auxx].setTexture(eight); gasite++; minesweeper[auxx][auxy] = 12;
+																		}
+																		else
+																			if (minesweeper[auxx][auxy] == 11)
+																			{
+																				joc[auxy][auxx].setTexture(bomba); minesweeper[auxx][auxy] = 12;
+																			}
+																		else
+																			if (minesweeper[auxx][auxy] == 0)
+																				fill(auxx, auxy);
+										}
+										
+									}
+									else
+										if(curaj!=curaj2)
+									{
+										loss.setPosition(Vector2f(250, 150));
+										renderWindow.draw(loss);
+										renderWindow.display();
+										sepoate = 0;
+										coloane = 8;
+										lini = 6;
+
+
+										char numenou[30];
+										string numelecolegului = words;
+										strncpy(numenou, numelecolegului.c_str(), sizeof(numenou));
+										citire(numenou, ScorulJucatorului);
+										ScorulJucatorului = 0;
+										words2 = "Scorul: ";
+										words2 += (char)(ScorulJucatorului + 48);
+										for (int i = 0; i < cati; i++)
+											cout << lista[i].numele << " " << lista[i].scor << endl;
+										/*
+										//PENTRU AJUTOR PREZENTARE
+										if (coloane < 28)
+										{
+										coloane++;
+										if (lini<20)
+										lini = coloane - 2;
+										}
+										else
+										hero++;
+										*/
+										wait(3);
+									}
 								}
-					}
+								
+							}
 				break;
 				case Event::TextEntered:
 					if (eveniment.text.unicode >= 32 && eveniment.text.unicode <= 126)
@@ -524,8 +684,11 @@ int main()
 							}
 						cout << endl;
 					}
-					cout << sumabombe;
+					cout << "Nr Bombe: "<<sumabombe<<endl;
 					gasite = 0;
+					for (int k1 = 0; k1 < lini; k1++)
+						for (int k2 = 0; k2 < coloane; k2++)
+							minesweeperhelp[k1][k2] = minesweeper[k1][k2];
 				}
 				for (int i = 0; i < coloane; i++)
 					for (int j = 0; j < lini; j++)
