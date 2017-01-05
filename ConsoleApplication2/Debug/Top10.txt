@@ -1,0 +1,6 @@
+Dan 10
+Andrei 7
+Andrea 6
+Vlad 4
+Petrea 2
+Ion 0

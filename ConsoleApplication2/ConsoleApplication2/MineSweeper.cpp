@@ -9,6 +9,7 @@
 #include <conio.h>
 #include <time.h>
 #include <windows.h>
+#include <string.h>
 #define BOMBA 11
 using namespace sf;
 using namespace std;
@@ -20,8 +21,10 @@ int sepoate = 0;
 int sumabombe;
 int gasite;
 int quest[30][30];
-int hero = 3;
+int hero = 25;
 int onlyonestart;
+int cati = 0;
+int ScorulJucatorului = 0;
 Sprite joc[30][30];
 Texture nothing;
 Sprite loss;
@@ -33,6 +36,65 @@ struct Top10 {
 	int nul;
 	int scor;
 };
+Top10 lista[10];
+void citestedoar()
+{
+	cati = 0;
+	int ok = 0;
+	char numetop[30];
+	int scor;
+	ifstream fin("Top10.txt");
+	while (fin >> numetop >> scor)
+	{	
+			strcpy(lista[cati].numele, numetop);
+			lista[cati].scor = scor;
+			cati++;	
+	}
+	fin.close();
+}
+void citire(char nou[30],int scorul)
+{
+	
+	cati = 0;
+	int ok = 0;
+	char numetop[30];
+	int scor;
+	ifstream fin("Top10.txt");
+	while (fin >> numetop >> scor)
+
+	{
+		if (scorul > scor&&ok==0&&nou[0]!=' ')
+		{
+			strcpy(lista[cati].numele, nou);
+			lista[cati].scor = scorul;
+			cati++;
+			if (cati < 10)
+			{
+				strcpy(lista[cati].numele, numetop);
+				lista[cati].scor = scor;
+				cati++;
+			}
+			ok = 1;
+	    }
+		else
+		{
+			strcpy(lista[cati].numele, numetop);
+			lista[cati].scor = scor;
+			cati++;
+		}
+	}
+	if (ok == 0 && cati < 10 && nou[0] != ' ')
+	{
+		strcpy(lista[cati].numele, nou);
+		lista[cati].scor = scorul;
+		cati++;
+	}
+	fin.close();
+	ofstream fout("Top10.txt");
+	for (int i = 0; i < cati; i++)
+		fout << lista[i].numele << ' ' << lista[i].scor << endl;
+	fout.close();
+}
 void wait(int seconds)
 {
 	clock_t endwait;
@@ -77,7 +139,7 @@ void creare()
 	for (int k = 0; k<lini; k++)
 		for (int k2 = 0; k2 < coloane; k2++)
 		{
-			int poate = rand() % 10+1;
+			int poate = rand() % 100+1;
 			if(poate<hero)
 				if (minesweeper[k][k2] != BOMBA)
 				{
@@ -110,8 +172,8 @@ void creare()
 int rezx, rezy;
 int main()
 {
-	HWND hWnd = GetConsoleWindow();
-	ShowWindow(hWnd, SW_HIDE);
+	//HWND hWnd = GetConsoleWindow();
+	//ShowWindow(hWnd, SW_HIDE);
 	Texture one;
 	one.loadFromFile("1.png");
 	Texture two;
@@ -143,14 +205,16 @@ int main()
 	Font font;
 	font.loadFromFile("Candarai.ttf");
 	Text text(words,font,40);
+	String words2 ="Scorul: 0";
+	Text text2(words2, font, 40);
 	
-
 	
 	
 	
 	
 	rezx = 1024;
 	rezy = 860;
+	text2.setPosition(Vector2f(rezx / 2-100, 0));
 	RenderWindow renderWindow(VideoMode(rezx, rezy), "MineSweeper",Style::Titlebar|Style::Close);
 	Sprite Start;
 	Texture ButonulStart;
@@ -167,26 +231,17 @@ int main()
 	Texture patrat;
 	patrat.loadFromFile("patrat.png");
 	patrat.setSmooth(true);
+	Sprite Background2;
+	Texture Backgroundtext2;
+	Backgroundtext2.loadFromFile("Background2.png");
+	Backgroundtext2.setSmooth(true);
+	Background2.setTexture(Backgroundtext2);
 	
 	
 
 	int Okpentrustart = 0;
 	
 	
-	/*Top10 Toti[10];
-	cin >> Toti[0].numele;
-	cout << Toti[0].numele;
-	Toti[0].scor = 5;
-	Toti[0].nul = 6;
-	for (int i = 0; i < Toti[0].nul; i++)
-		words += (char)Toti[0].numele[i];
-	if (Toti[0].scor / 10 == 0)
-		words += char(Toti[0].scor + 48);
-	else
-	{
-		words += char(Toti[0].scor/10 + 48);
-		words += char(Toti[0].scor + 48);
-	}*/
 	while (renderWindow.isOpen())
 	{
 		
@@ -205,6 +260,56 @@ int main()
 				case Event::MouseButtonPressed:
 					if (Mouse::isButtonPressed(Mouse::Left))
 					{
+						if (eveniment.mouseButton.x >= 840 && eveniment.mouseButton.y > 780)
+						{
+							citestedoar();
+							
+							renderWindow.draw(Background2);
+							string afisare="Top 10";
+							Text afisaretext(afisare,font,40);
+							afisaretext.setPosition(Vector2f(400, 0));
+							afisaretext.setString(afisare);
+							renderWindow.draw(afisaretext);
+
+							
+							for (int i = 0; i < cati; i++)
+							{   
+								afisaretext.setPosition(Vector2f(50, (60*i)+100));
+								string aux(lista[i].numele);
+								afisaretext.setString(aux);
+								renderWindow.draw(afisaretext);
+								afisaretext.setPosition(Vector2f(50+200, (60 * i) + 100));
+								char scoruasta[30];
+								if (lista[i].scor > 100)
+								{
+									scoruasta[0] = char(lista[i].scor / 100 % 10 + 48);
+									scoruasta[1] = char(lista[i].scor / 10 % 10 + 48);
+									scoruasta[2] = char(lista[i].scor  % 10 + 48);
+									scoruasta[3] = NULL;
+								}
+								else
+									if (lista[i].scor > 10)
+									{
+										
+										scoruasta[0] = char(lista[i].scor / 10 % 10 + 48);
+										scoruasta[1] = char(lista[i].scor % 10 + 48);
+										scoruasta[2] = NULL;
+									}
+									else
+										if (lista[i].scor >=0)
+										{
+											
+											scoruasta[0] = char(lista[i].scor % 10 + 48);
+											scoruasta[1] = NULL;
+										}
+								string aux2(scoruasta);
+								afisaretext.setString(aux2);
+								renderWindow.draw(afisaretext);
+							}
+							renderWindow.display();
+							wait(5);
+						}
+						else
 						if (eveniment.mouseButton.x >= Start.getPosition().x&&eveniment.mouseButton.y >= Start.getPosition().y)
 						{
 
@@ -272,13 +377,24 @@ int main()
 																	else
 																		if (minesweeper[x][y] == 11 && quest[x][y] == 0)
 																		{
-																			cout << "Da";
+																			
 																			loss.setPosition(Vector2f(250, 150));
 																			renderWindow.draw(loss);
 																			renderWindow.display();
 																			sepoate = 0;
 																			coloane = 8;
 																			lini = 6;
+																			
+																			
+																			char numenou[30];
+																			string numelecolegului = words;
+																			strncpy(numenou, numelecolegului.c_str(), sizeof(numenou));
+																			citire(numenou, ScorulJucatorului);
+																			ScorulJucatorului = 0;
+																			words2 = "Scorul: ";
+																			words2 += (char)(ScorulJucatorului + 48);
+																			for (int i = 0; i < cati; i++)
+																				cout << lista[i].numele << " " << lista[i].scor << endl;
 																			/*
 																			//PENTRU AJUTOR PREZENTARE
 																			if (coloane < 28)
@@ -296,6 +412,16 @@ int main()
 									cout << gasite + sumabombe << " " << lini*coloane << endl;
 									if (gasite + sumabombe == lini*coloane)
 									{
+										ScorulJucatorului++;
+										words2 = "Scorul: ";
+										
+										if (ScorulJucatorului > 9)
+										{
+											words2 += (char)(ScorulJucatorului / 10 + 48);
+											words2 += (char)(ScorulJucatorului + 48);
+										}
+										else
+											words2 += (char)(ScorulJucatorului + 48);
 										win.setPosition(Vector2f(250, 150));
 										renderWindow.draw(win);
 										renderWindow.display();										
@@ -307,8 +433,11 @@ int main()
 											coloane++;
 											if (lini < 20)
 												lini = coloane - 2;
+											if(hero<80)
+											hero++;
 										}
 										else
+											if(hero<80)
 											hero++;
 										
 									}
@@ -362,10 +491,11 @@ int main()
 			}
 
 			
-			
+			text2.setString(words2);
 			renderWindow.draw(Background);
 			renderWindow.draw(Start);
 			renderWindow.draw(text);
+			renderWindow.draw(text2);
 			if (Okpentrustart == 1)
 			{
 				
