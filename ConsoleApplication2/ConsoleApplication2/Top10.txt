@@ -1,7 +1,6 @@
-Dan 5
+Dan 10
 Gheorge 3
 Vlad 3
 Ion 1
 Costel 1
-Darius 0
  0

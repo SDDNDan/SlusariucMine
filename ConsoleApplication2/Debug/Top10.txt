@@ -4,3 +4,4 @@ Andrea 6
 Vlad 4
 Petrea 2
 Ion 0
+ 0
